@@ -1,0 +1,14 @@
+# Drawing Splitter — Python dependencies
+# Install with: pip install -r requirements.txt
+
+# GUI framework
+PySide6>=6.6.0
+
+# PDF processing (PyMuPDF)
+PyMuPDF>=1.23.0
+
+# Image processing for OCR preprocessing (optional but recommended)
+Pillow>=10.0.0
+
+# Packaging to EXE (dev only)
+# pyinstaller>=6.0

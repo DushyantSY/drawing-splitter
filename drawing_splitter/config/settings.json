@@ -1,0 +1,29 @@
+{
+  "tesseract_path": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+  "ocr_mode": "auto",
+  "title_block": {
+    "preset": "bottom-right",
+    "x_start_pct": 60.0,
+    "y_start_pct": 78.0,
+    "x_end_pct": 100.0,
+    "y_end_pct": 100.0
+  },
+  "regex": {
+    "drawing_number": "([A-Z0-9]{2,}(?:-[A-Z0-9]+){4,})",
+    "revision_primary": "\\b(?:REV(?:ISION)?)[\\s:._-]*([A-Z0-9]+)\\b",
+    "revision_fallback": "\\b(R[0-9A-Z]+)\\b"
+  },
+  "output": {
+    "duplicate_suffix": true,
+    "fallback_prefix": "PAGE"
+  },
+  "ocr": {
+    "dpi": 300,
+    "language": "eng",
+    "psm": 6
+  },
+  "ui": {
+    "theme": "dark",
+    "preview_zoom": 1.0
+  }
+}
