@@ -44,6 +44,7 @@ class MainWindow(QMainWindow):
         self._worker: Optional[ProcessingWorker] = None
         self._pdf_processor: Optional[PDFProcessor] = None
         self._total_pages = 0
+        self._last_log_path = ""
 
         self.setWindowTitle("Drawing Splitter — Engineering PDF Tool")
         self.setMinimumSize(1100, 700)
@@ -140,55 +141,51 @@ class MainWindow(QMainWindow):
 
         row.addStretch()
 
-        settings_btn = QPushButton("⚙  Settings")
-        settings_btn.clicked.connect(self._open_settings)
-        row.addWidget(settings_btn)
+        self._settings_btn = QPushButton("⚙  Settings")
+        row.addWidget(self._settings_btn)
 
         return box
 
     def _build_action_group(self) -> QGroupBox:
+        # Single QGroupBox — the original double-box caused button GC and the signal crash
         box = QGroupBox("Actions")
-        row = QHBoxLayout(box)
-        row.setSpacing(8)
+        outer_layout = QVBoxLayout(box)
+        outer_layout.setSpacing(6)
+
+        btn_row = QHBoxLayout()
+        btn_row.setSpacing(8)
 
         self._start_btn = QPushButton("▶  Start Processing")
         self._start_btn.setFixedHeight(36)
         self._start_btn.setEnabled(False)
         self._start_btn.setObjectName("start_btn")
-        row.addWidget(self._start_btn, stretch=2)
+        btn_row.addWidget(self._start_btn, stretch=2)
 
         self._cancel_btn = QPushButton("⛔  Cancel")
         self._cancel_btn.setFixedHeight(36)
         self._cancel_btn.setEnabled(False)
-        row.addWidget(self._cancel_btn, stretch=1)
+        btn_row.addWidget(self._cancel_btn, stretch=1)
 
         self._open_out_btn = QPushButton("📂  Open Output")
         self._open_out_btn.setFixedHeight(36)
         self._open_out_btn.setEnabled(False)
-        row.addWidget(self._open_out_btn, stretch=1)
+        btn_row.addWidget(self._open_out_btn, stretch=1)
 
         self._export_log_btn = QPushButton("📄  Export Log")
         self._export_log_btn.setFixedHeight(36)
         self._export_log_btn.setEnabled(False)
-        row.addWidget(self._export_log_btn, stretch=1)
+        btn_row.addWidget(self._export_log_btn, stretch=1)
 
-        # Progress bar
-        progress_row = QVBoxLayout()
+        outer_layout.addLayout(btn_row)
+
         self._progress_bar = QProgressBar()
         self._progress_bar.setRange(0, 100)
         self._progress_bar.setValue(0)
         self._progress_bar.setTextVisible(True)
         self._progress_bar.setFixedHeight(18)
-        progress_row.addLayout(row)
-        progress_row.addWidget(self._progress_bar)
+        outer_layout.addWidget(self._progress_bar)
 
-        # Wrap
-        container = QWidget()
-        container.setLayout(progress_row)
-        outer = QGroupBox("Actions")
-        outer_layout = QVBoxLayout(outer)
-        outer_layout.addWidget(container)
-        return outer
+        return box
 
     def _build_results_group(self) -> QGroupBox:
         box = QGroupBox("Results")
@@ -247,6 +244,7 @@ class MainWindow(QMainWindow):
     def _connect_signals(self) -> None:
         self._browse_pdf_btn.clicked.connect(self._browse_pdf)
         self._browse_out_btn.clicked.connect(self._browse_output)
+        self._settings_btn.clicked.connect(self._open_settings)
         self._start_btn.clicked.connect(self._start_processing)
         self._cancel_btn.clicked.connect(self._cancel_processing)
         self._open_out_btn.clicked.connect(self._open_output_folder)
